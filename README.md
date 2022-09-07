@@ -1,6 +1,6 @@
 # go-daemon
 
-Library for writing system daemons in Go. fork from [go-daemon 试用](https://github.com/sevlyar/go-daemon)
+Library for writing system daemons in Go. fork from [go-daemon](https://github.com/sevlyar/go-daemon)
 
 Now supported only UNIX-based OS (Windows is not supported). But the library was tested only on Linux
 and OSX, so that if you have an ability to test the library on other platforms, give me feedback, please (#26).
@@ -16,7 +16,7 @@ and OSX, so that if you have an ability to test the library on other platforms, 
 
 ## Installation
 
-	go get github.com/bingoohuang/go-daemon
+	go get github.com/bingoohuang/godaemon
 
 ## Examples
 
