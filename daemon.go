@@ -44,8 +44,8 @@ func (d *Context) Release() error {
 	return d.release()
 }
 
-// Deamonize set the current process daemonozed
-func Deamonize(daemon bool) {
+// Daemonize set the current process daemonized
+func Daemonize(daemon bool) {
 	if !daemon {
 		return
 	}
