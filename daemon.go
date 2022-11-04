@@ -2,6 +2,7 @@ package godaemon
 
 import (
 	"errors"
+	"log"
 	"os"
 )
 
@@ -41,4 +42,17 @@ func (d *Context) Search() (daemon *os.Process, err error) {
 // Release provides correct pid-file release in daemon.
 func (d *Context) Release() error {
 	return d.release()
+}
+
+// Deamonize set the current process daemonozed
+func Deamonize(daemon bool) {
+	if !daemon {
+		return
+	}
+
+	if p, _ := new(Context).Reborn(); p != nil {
+		os.Exit(0)
+	}
+
+	log.Printf("--- daemon started --")
 }
