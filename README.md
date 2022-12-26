@@ -20,6 +20,24 @@ and OSX, so that if you have an ability to test the library on other platforms, 
 
 ## Examples
 
+```go
+package main
+
+import (
+	"github.com/spf13/pflag"
+	"github.com/bingoohuang/godaemon"
+)
+
+func main() {
+	daemon := pflag.Bool("daemon", false, "run in daemonize mode")
+	pflag.Parse()
+	godaemon.Daemonize(*daemon)
+
+	// logic ...
+}
+
+```
+
 * [Simple](cmd/gd-simple/)
 * [Log rotation](cmd/gd-log-rotation/)
 * [Signal handling](cmd/gd-signal-handling/)
