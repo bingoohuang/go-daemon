@@ -50,7 +50,18 @@ func Daemonize(daemon bool) {
 		return
 	}
 
-	if p, _ := new(Context).Reborn(); p != nil {
+	pidFileName := ""
+	if err := os.Mkdir("var", os.ModePerm); err == nil || errors.Is(err, os.ErrExist) {
+		pidFileName = "var/pid"
+	} else {
+		log.Printf("mkdir var failed: %v", err)
+	}
+
+	ctx := &Context{
+		PidFileName: pidFileName,
+	}
+
+	if p, _ := ctx.Reborn(); p != nil {
 		os.Exit(0)
 	}
 
