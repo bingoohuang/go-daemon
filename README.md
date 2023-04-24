@@ -16,7 +16,7 @@ and OSX, so that if you have an ability to test the library on other platforms, 
 
 ## Installation
 
-	go get github.com/bingoohuang/godaemon
+	go get github.com/bingoohuang/godaemon@latest
 
 ## Examples
 
