@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/bingoohuang/godaemon"
 	"html"
 	"log"
 	"net/http"
+
+	"github.com/bingoohuang/godaemon"
 )
 
 // To terminate the daemon use:

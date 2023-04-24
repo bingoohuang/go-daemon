@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
-	"github.com/bingoohuang/godaemon"
 	"log"
 	"os"
 	"syscall"
 	"time"
+
+	"github.com/bingoohuang/godaemon"
 )
 
 var signal = flag.String("s", "", `Send signal to the daemon:
