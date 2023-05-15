@@ -1,3 +1,4 @@
+// Package godaemon help program to be deamonized.
 package godaemon
 
 import (

@@ -41,7 +41,7 @@ func ServeSignals() (err error) {
 
 	signal.Stop(ch)
 
-	if err == ErrStop {
+	if errors.Is(err, ErrStop) {
 		err = nil
 	}
 
@@ -54,6 +54,6 @@ func init() {
 	handlers[syscall.SIGTERM] = sigtermDefaultHandler
 }
 
-func sigtermDefaultHandler(sig os.Signal) error {
+func sigtermDefaultHandler(os.Signal) error {
 	return ErrStop
 }

@@ -44,16 +44,47 @@ func (d *Context) Release() error {
 	return d.release()
 }
 
+// Option is options for Daemonize function.
+type Option struct {
+	Daemon bool
+	Debug  bool
+}
+
+// OptionFn is an option function prototype.
+type OptionFn func(option *Option)
+
+// WithDaemon set the deamon flag.
+func WithDaemon(v bool) OptionFn {
+	return func(option *Option) {
+		option.Daemon = v
+	}
+}
+
+// WithDebug set the debug flag.
+func WithDebug(v bool) OptionFn {
+	return func(option *Option) {
+		option.Debug = v
+	}
+}
+
 // Daemonize set the current process daemonized
-func Daemonize(daemon bool) {
-	if !daemon {
+func Daemonize(optionFns ...OptionFn) {
+	option := &Option{
+		Daemon: true,
+		Debug:  false,
+	}
+	for _, fn := range optionFns {
+		fn(option)
+	}
+
+	if !option.Daemon {
 		return
 	}
 
 	pidFileName := ""
 	if err := os.Mkdir("var", os.ModePerm); err == nil || errors.Is(err, os.ErrExist) {
 		pidFileName = "var/pid"
-	} else {
+	} else if option.Debug {
 		log.Printf("mkdir var failed: %v", err)
 	}
 
@@ -65,5 +96,7 @@ func Daemonize(daemon bool) {
 		os.Exit(0)
 	}
 
-	log.Printf("--- daemon started --")
+	if option.Debug {
+		log.Printf("--- daemon started --")
+	}
 }

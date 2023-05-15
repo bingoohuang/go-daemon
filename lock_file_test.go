@@ -1,6 +1,7 @@
 package godaemon
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -91,7 +92,7 @@ func TestLockFileLock(test *testing.T) {
 			test.Fatal("To lock file more than once must be unavailable.")
 		}
 	} else {
-		if err := lock2.Lock(); err != nil && err != ErrWouldBlock {
+		if err := lock2.Lock(); err != nil && errors.Is(err, ErrWouldBlock) {
 			test.Fatal("To lock file more than once must be unavailable.")
 		}
 	}

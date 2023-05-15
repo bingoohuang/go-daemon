@@ -38,9 +38,9 @@ func TestCompilation(t *testing.T) {
 		"windows/amd64",
 
 		// TODO(yar): support plan9
-		//"plan9/386",
-		//"plan9/amd64",
-		//"plan9/arm",
+		// "plan9/386",
+		// "plan9/amd64",
+		// "plan9/arm",
 	}
 
 	env := os.Environ()
@@ -53,8 +53,8 @@ func TestCompilation(t *testing.T) {
 			continue
 		}
 		cmd := exec.Command("go", "build", "./")
-		env := append([]string(nil), env...)
-		cmd.Env = append(env, "GOOS="+goos, "GOARCH="+goarch)
+		cmd.Env = append([]string(nil), env...)
+		cmd.Env = append(cmd.Env, "GOOS="+goos, "GOARCH="+goarch)
 		out, err := cmd.CombinedOutput()
 		if len(out) > 0 {
 			t.Log(p, "\n", string(out))

@@ -24,14 +24,14 @@ and OSX, so that if you have an ability to test the library on other platforms, 
 package main
 
 import (
-	"github.com/spf13/pflag"
 	"github.com/bingoohuang/godaemon"
+	flag "github.com/spf13/pflag"
 )
 
 func main() {
-	daemon := pflag.Bool("daemon", false, "run in daemonize mode")
-	pflag.Parse()
-	godaemon.Daemonize(*daemon)
+	daemon := flag.BoolP("daemon", "d", false, "run in daemonize mode")
+	flag.Parse()
+	godaemon.Daemonize(godaemon.WithDaemon(*daemon))
 
 	// logic ...
 }
