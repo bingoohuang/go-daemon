@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	if env := os.Getenv("DEAMON"); env != "" {
+	if env := os.Getenv("DAEMON"); env != "" {
 		switch strings.ToLower(env) {
 		case "true", "1", "t", "yes", "y", "on":
 			godaemon.Daemonize()
