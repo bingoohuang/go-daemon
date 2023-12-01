@@ -254,7 +254,7 @@ func (d *Context) child() (err error) {
 	}
 
 	if d.Umask != 0 {
-		syscall.Umask(int(d.Umask))
+		syscall.Umask(d.Umask)
 	}
 	if len(d.Chroot) > 0 {
 		err = syscall.Chroot(d.Chroot)

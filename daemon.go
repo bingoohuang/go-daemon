@@ -46,8 +46,9 @@ func (d *Context) Release() error {
 
 // Option is options for Daemonize function.
 type Option struct {
-	Daemon bool
-	Debug  bool
+	Daemon      bool
+	Debug       bool
+	LogFileName string
 }
 
 // OptionFn is an option function prototype.
@@ -64,6 +65,13 @@ func WithDaemon(v bool) OptionFn {
 func WithDebug(v bool) OptionFn {
 	return func(option *Option) {
 		option.Debug = v
+	}
+}
+
+// WithLogFileName set the log file name.
+func WithLogFileName(v string) OptionFn {
+	return func(option *Option) {
+		option.LogFileName = v
 	}
 }
 
@@ -88,8 +96,15 @@ func Daemonize(optionFns ...OptionFn) {
 		log.Printf("mkdir var failed: %v", err)
 	}
 
+	workDir, err := os.Getwd()
+	if err != nil {
+		log.Panicf("get cwd error: %v", err)
+	}
+
 	ctx := &Context{
 		PidFileName: pidFileName,
+		WorkDir:     workDir,
+		LogFileName: option.LogFileName,
 	}
 
 	if p, _ := ctx.Reborn(); p != nil {
