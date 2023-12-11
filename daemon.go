@@ -89,20 +89,12 @@ func Daemonize(optionFns ...OptionFn) {
 		return
 	}
 
-	pidFileName := ""
-	if err := os.Mkdir("var", os.ModePerm); err == nil || errors.Is(err, os.ErrExist) {
-		pidFileName = "var/pid"
-	} else if option.Debug {
-		log.Printf("mkdir var failed: %v", err)
-	}
-
 	workDir, err := os.Getwd()
 	if err != nil {
 		log.Panicf("get cwd error: %v", err)
 	}
 
 	ctx := &Context{
-		PidFileName: pidFileName,
 		WorkDir:     workDir,
 		LogFileName: option.LogFileName,
 	}
