@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strings"
 )
 
 var errNotSupported = errors.New("daemon: Non-POSIX OS is not supported")
@@ -86,6 +87,11 @@ func Daemonize(optionFns ...OptionFn) {
 	}
 
 	if !option.Daemon {
+		return
+	}
+
+	// goland 启动时，不进入后台模式
+	if strings.Contains(os.Args[0], "/Caches/JetBrains") {
 		return
 	}
 
