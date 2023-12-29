@@ -64,9 +64,12 @@ func (d *Context) SetLogFile(fd *os.File) {
 func (d *Context) reborn() (child *os.Process, err error) {
 	if !WasReborn() {
 		child, err = d.parent()
-	} else {
-		err = d.child()
+		return
 	}
+
+	// 子进程清除 reborn 状态，方便后续继续 fork 子进程
+	_ = ClearReborn()
+	err = d.child()
 	return
 }
 

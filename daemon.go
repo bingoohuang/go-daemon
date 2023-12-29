@@ -18,6 +18,11 @@ const (
 // FilePerm is the default file permissions for log and pid files.
 const FilePerm = os.FileMode(0o640)
 
+// ClearReborn clear the reborn env.
+func ClearReborn() error {
+	return os.Setenv(MarkName, "")
+}
+
 // WasReborn returns true in child process (daemon) and false in parent process.
 func WasReborn() bool {
 	return os.Getenv(MarkName) == MarkValue
