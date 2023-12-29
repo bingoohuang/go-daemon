@@ -108,7 +108,6 @@ func (d *Context) parent() (child *os.Process, err error) {
 		Sys: &syscall.SysProcAttr{
 			Credential: d.Credential,
 			Setsid:     true,
-			Noctty:     true,
 		},
 	}
 
