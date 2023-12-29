@@ -20,7 +20,7 @@ const FilePerm = os.FileMode(0o640)
 
 // ClearReborn clear the reborn env.
 func ClearReborn() error {
-	return os.Setenv(MarkName, "")
+	return os.Unsetenv(MarkName)
 }
 
 // WasReborn returns true in child process (daemon) and false in parent process.
@@ -48,6 +48,10 @@ func (d *Context) Search() (daemon *os.Process, err error) {
 // Release provides correct pid-file release in daemon.
 func (d *Context) Release() error {
 	return d.release()
+}
+
+func (d *Context) Clean() error {
+	return d.clean()
 }
 
 // Option is options for Daemonize function.

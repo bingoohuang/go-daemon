@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"syscall"
 )
@@ -20,7 +21,7 @@ type Context struct {
 	rpipe, wpipe *os.File
 
 	// Credential holds user and group identities to be assumed by a daemon-process.
-	Credential *syscall.Credential
+	Credential *Credential
 	nullFile   *os.File
 
 	// Struct contains only serializable public fields (!!!)
@@ -55,6 +56,13 @@ type Context struct {
 
 	// Permissions for new log file.
 	LogFilePerm os.FileMode
+}
+
+type Credential struct {
+	Uid         uint32   // User ID.
+	Gid         uint32   // Group ID.
+	Groups      []uint32 // Supplementary group IDs.
+	NoSetGroups bool     // If true, don't set supplementary groups
 }
 
 // SetLogFile set the log file.
@@ -107,8 +115,13 @@ func (d *Context) parent() (child *os.Process, err error) {
 		Env:   d.Env,
 		Files: d.files(),
 		Sys: &syscall.SysProcAttr{
-			Credential: d.Credential,
-			Setsid:     true,
+			Credential: &syscall.Credential{
+				Uid:         d.Credential.Uid,
+				Gid:         d.Credential.Gid,
+				Groups:      d.Credential.Groups,
+				NoSetGroups: d.Credential.NoSetGroups,
+			},
+			Setsid: true,
 		},
 	}
 
@@ -202,8 +215,9 @@ func (d *Context) prepareEnv() (err error) {
 	if len(d.Env) == 0 {
 		d.Env = os.Environ()
 	}
-	d.Env = append(d.Env, mark)
-
+	if !slices.Contains(d.Env, mark) {
+		d.Env = append(d.Env, mark)
+	}
 	return
 }
 
@@ -274,5 +288,15 @@ func (d *Context) release() error {
 		return nil
 	}
 
+	return d.pidFile.Remove()
+}
+
+func (d *Context) clean() (err error) {
+	if d.PidFileName == "" {
+		return nil
+	}
+	if d.pidFile, err = OpenLockFile(d.PidFileName, d.PidFilePerm); err != nil {
+		return
+	}
 	return d.pidFile.Remove()
 }
