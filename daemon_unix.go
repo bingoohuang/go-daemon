@@ -106,9 +106,9 @@ func (d *Context) parent() (child *os.Process, err error) {
 		Env:   d.Env,
 		Files: d.files(),
 		Sys: &syscall.SysProcAttr{
-			// Chroot:     d.Chroot,
 			Credential: d.Credential,
 			Setsid:     true,
+			Noctty:     true,
 		},
 	}
 
