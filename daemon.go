@@ -3,7 +3,6 @@ package godaemon
 import (
 	"errors"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/bingoohuang/q"
@@ -13,7 +12,8 @@ var errNotSupported = errors.New("daemon: Non-POSIX OS is not supported")
 
 // MarkName marks of daemon process - system environment variable _GO_DAEMON={pid}
 const (
-	MarkName = "_GO_DAEMON"
+	MarkName  = "_GO_DAEMON"
+	MarkValue = "1"
 )
 
 // FilePerm is the default file permissions for log and pid files.
@@ -21,15 +21,17 @@ const FilePerm = os.FileMode(0o640)
 
 // ClearReborn clear the reborn env.
 func ClearReborn() error {
-	return os.Unsetenv(MarkName)
+	err := os.Unsetenv(MarkName)
+	q.D(os.Getenv(MarkName))
+	return err
 }
 
 // WasReborn returns true in child process (daemon) and false in parent process.
 func WasReborn() bool {
 	markValue := os.Getenv(MarkName)
-	q.D(markValue, os.Getpid(), os.Getppid())
+	q.D(markValue)
 
-	return markValue == strconv.Itoa(os.Getppid())
+	return markValue == MarkValue
 }
 
 // Reborn runs second copy of current process in the given context.

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strconv"
 	"syscall"
 
 	"github.com/bingoohuang/q"
@@ -219,7 +218,7 @@ func (d *Context) prepareEnv() (err error) {
 		d.Env = os.Environ()
 	}
 
-	mark := fmt.Sprintf("%s=%s", MarkName, strconv.Itoa(os.Getpid()))
+	mark := fmt.Sprintf("%s=%s", MarkName, MarkValue)
 	q.D(mark)
 	d.Env = append(d.Env, mark)
 	return
