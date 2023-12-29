@@ -58,13 +58,6 @@ type Context struct {
 	LogFilePerm os.FileMode
 }
 
-type Credential struct {
-	Uid         uint32   // User ID.
-	Gid         uint32   // Group ID.
-	Groups      []uint32 // Supplementary group IDs.
-	NoSetGroups bool     // If true, don't set supplementary groups
-}
-
 // SetLogFile set the log file.
 func (d *Context) SetLogFile(fd *os.File) {
 	d.logFile = fd

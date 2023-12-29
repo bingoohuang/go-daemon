@@ -120,3 +120,10 @@ func Daemonize(optionFns ...OptionFn) {
 		os.Exit(0)
 	}
 }
+
+type Credential struct {
+	Uid         uint32   // User ID.
+	Gid         uint32   // Group ID.
+	Groups      []uint32 // Supplementary group IDs.
+	NoSetGroups bool     // If true, don't set supplementary groups
+}
