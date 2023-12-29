@@ -115,14 +115,17 @@ func (d *Context) parent() (child *os.Process, err error) {
 		Env:   d.Env,
 		Files: d.files(),
 		Sys: &syscall.SysProcAttr{
-			Credential: &syscall.Credential{
-				Uid:         d.Credential.Uid,
-				Gid:         d.Credential.Gid,
-				Groups:      d.Credential.Groups,
-				NoSetGroups: d.Credential.NoSetGroups,
-			},
 			Setsid: true,
 		},
+	}
+
+	if d.Credential != nil {
+		attr.Sys.Credential = &syscall.Credential{
+			Uid:         d.Credential.Uid,
+			Gid:         d.Credential.Gid,
+			Groups:      d.Credential.Groups,
+			NoSetGroups: d.Credential.NoSetGroups,
+		}
 	}
 
 	if child, err = os.StartProcess(d.abspath, d.Args, attr); err != nil {
