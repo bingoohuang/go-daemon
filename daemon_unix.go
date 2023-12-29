@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"slices"
 	"strconv"
 	"syscall"
 )
@@ -73,12 +72,12 @@ func (d *Context) SetLogFile(fd *os.File) {
 func (d *Context) reborn() (child *os.Process, err error) {
 	if !WasReborn() {
 		child, err = d.parent()
-		return
+	} else {
+		err = d.child()
 	}
 
-	// 子进程清除 reborn 状态，方便后续继续 fork 子进程
+	// reborn 状态，方便后续继续 fork 子进程
 	_ = ClearReborn()
-	err = d.child()
 	return
 }
 
@@ -214,13 +213,12 @@ func (d *Context) prepareEnv() (err error) {
 		d.Args = os.Args
 	}
 
-	mark := fmt.Sprintf("%s=%s", MarkName, strconv.Itoa(os.Getpid()))
 	if len(d.Env) == 0 {
 		d.Env = os.Environ()
 	}
-	if !slices.Contains(d.Env, mark) {
-		d.Env = append(d.Env, mark)
-	}
+
+	mark := fmt.Sprintf("%s=%s", MarkName, strconv.Itoa(os.Getpid()))
+	d.Env = append(d.Env, mark)
 	return
 }
 
