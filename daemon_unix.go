@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"syscall"
 )
 
@@ -197,7 +198,7 @@ func (d *Context) prepareEnv() (err error) {
 		d.Args = os.Args
 	}
 
-	mark := fmt.Sprintf("%s=%s", MarkName, MarkValue)
+	mark := fmt.Sprintf("%s=%s", MarkName, strconv.Itoa(os.Getpid()))
 	if len(d.Env) == 0 {
 		d.Env = os.Environ()
 	}
