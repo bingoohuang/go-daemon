@@ -2,10 +2,11 @@ package godaemon
 
 import (
 	"errors"
-	"log"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/bingoohuang/q"
 )
 
 var errNotSupported = errors.New("daemon: Non-POSIX OS is not supported")
@@ -25,7 +26,10 @@ func ClearReborn() error {
 
 // WasReborn returns true in child process (daemon) and false in parent process.
 func WasReborn() bool {
-	return os.Getenv(MarkName) == strconv.Itoa(os.Getppid())
+	markValue := os.Getenv(MarkName)
+	q.D(markValue, os.Getpid(), os.Getppid())
+
+	return markValue == strconv.Itoa(os.Getppid())
 }
 
 // Reborn runs second copy of current process in the given context.
@@ -66,22 +70,15 @@ type OptionFn func(option *Option)
 
 // WithDaemon set the deamon flag.
 func WithDaemon(v bool) OptionFn {
-	return func(option *Option) {
-		option.Daemon = v
-	}
-}
-
-// WithDebug set the debug flag.
-func WithDebug(v bool) OptionFn {
-	return func(option *Option) {
-		option.Debug = v
+	return func(o *Option) {
+		o.Daemon = v
 	}
 }
 
 // WithLogFileName set the log file name.
 func WithLogFileName(v string) OptionFn {
-	return func(option *Option) {
-		option.LogFileName = v
+	return func(o *Option) {
+		o.LogFileName = v
 	}
 }
 
@@ -89,7 +86,6 @@ func WithLogFileName(v string) OptionFn {
 func Daemonize(optionFns ...OptionFn) {
 	option := &Option{
 		Daemon: true,
-		Debug:  false,
 	}
 	for _, fn := range optionFns {
 		fn(option)
@@ -106,7 +102,7 @@ func Daemonize(optionFns ...OptionFn) {
 
 	workDir, err := os.Getwd()
 	if err != nil {
-		log.Panicf("get cwd error: %v", err)
+		q.D("Getwd error", err)
 	}
 
 	ctx := &Context{
@@ -114,11 +110,11 @@ func Daemonize(optionFns ...OptionFn) {
 		LogFileName: option.LogFileName,
 	}
 
-	if p, _ := ctx.Reborn(); p != nil {
-		os.Exit(0)
+	p, err := ctx.Reborn()
+	if err != nil {
+		q.D("reborn error", err)
 	}
-
-	if option.Debug {
-		log.Printf("--- daemon started --")
+	if p != nil {
+		os.Exit(0)
 	}
 }

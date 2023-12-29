@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"syscall"
+
+	"github.com/bingoohuang/q"
 )
 
 // A Context describes daemon context.
@@ -218,6 +220,7 @@ func (d *Context) prepareEnv() (err error) {
 	}
 
 	mark := fmt.Sprintf("%s=%s", MarkName, strconv.Itoa(os.Getpid()))
+	q.D(mark)
 	d.Env = append(d.Env, mark)
 	return
 }
