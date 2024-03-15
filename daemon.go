@@ -62,9 +62,10 @@ func (d *Context) Clean() error {
 
 // Option is options for Daemonize function.
 type Option struct {
-	Daemon      bool
-	Debug       bool
-	LogFileName string
+	Daemon        bool
+	Debug         bool
+	LogFileName   string
+	ParentProcess func(child *os.Process)
 }
 
 // OptionFn is an option function prototype.
@@ -81,6 +82,13 @@ func WithDaemon(v bool) OptionFn {
 func WithLogFileName(v string) OptionFn {
 	return func(o *Option) {
 		o.LogFileName = v
+	}
+}
+
+// WithParentProcess set the custom parent processor, if not set, the default is os.Exit(0)
+func WithParentProcess(f func(child *os.Process)) OptionFn {
+	return func(o *Option) {
+		o.ParentProcess = f
 	}
 }
 
@@ -112,13 +120,19 @@ func Daemonize(optionFns ...OptionFn) {
 		LogFileName: option.LogFileName,
 	}
 
-	p, err := ctx.Reborn()
+	child, err := ctx.Reborn()
 	if err != nil {
 		q.D("reborn error", err)
 	}
-	if p != nil {
-		os.Exit(0)
+	if child != nil {
+		// 有孩子，是父进程
+		if option.ParentProcess != nil {
+			option.ParentProcess(child)
+		} else {
+			os.Exit(0)
+		}
 	}
+	// 子进程，继续
 }
 
 type Credential struct {
