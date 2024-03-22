@@ -9,8 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"syscall"
-
-	"github.com/bingoohuang/q"
 )
 
 // A Context describes daemon context.
@@ -211,9 +209,10 @@ func (d *Context) prepareEnv() (err error) {
 		d.Env = os.Environ()
 	}
 
-	mark := fmt.Sprintf("%s=%s", MarkName, MarkValue)
-	q.D(mark)
-	d.Env = append(d.Env, mark)
+	d.Env = append(d.Env,
+		fmt.Sprintf("%s=%s", MarkName, MarkValue),
+		fmt.Sprintf("%s=%d", MarkParentPID, os.Getpid()),
+	)
 	return
 }
 
